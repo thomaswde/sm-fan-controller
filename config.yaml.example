@@ -1,0 +1,77 @@
+# SuperMicro Fan Controller Configuration
+# Copy this file to config.yaml and customize for your environment
+
+# IPMI Connection Settings
+ipmi:
+  host: "10.2.3.4"      # CHANGE THIS: Your server's IPMI IP address
+  username: "ADMIN"         # CHANGE THIS: IPMI username
+  password: "ADMIN"         # CHANGE THIS: IPMI password
+
+# Temperature Thresholds (Celsius)
+thresholds:
+  moderate: 52      # At/above this: moderate fan speed
+  high: 78          # At/above this: high fan speed
+  emergency: 90     # At/above this: maximum fan speed
+  safety_floor: 95  # Any sensor above this enforces minimum fan speed floor
+
+# Fan Speed Settings (hexadecimal, 0x00-0x64 = 0-100% duty cycle)
+fan_speeds:
+  idle: "0x04"              # 6% duty cycle - below moderate threshold
+  moderate: "0x16"          # 25% duty cycle
+  high: "0x32"              # 50% duty cycle
+  emergency: "0x64"         # 100% duty cycle
+  error_safe: "0x32"        # 50% - used when sensor reads fail
+  safety_floor_speed: "0x24" # 36% - minimum speed when any sensor exceeds safety_floor
+
+# Polling Intervals (seconds)
+polling:
+  normal: 15        # Standard polling rate (when temps are normal)
+  high_load: 5      # Polling rate during high/emergency thermal loads
+
+# Alert Settings
+alerts:
+  sustained_high_load: 60        # Alert if high load persists this long (seconds)
+  high_load_event_window: 3600   # Time window to count events (seconds) 
+  high_load_event_threshold: 5   # Number of events to trigger alert
+
+# Logging Configuration
+logging:
+  enabled: true                  # Enable/disable syslog logging
+  temp_log_size: 721            # Number of entries in rolling log (~60 min at 5s polling)
+  facility: "USER"              # Syslog facility (USER, LOCAL0-LOCAL7, DAEMON)
+
+# Web Interface Configuration
+web_interface:
+  enabled: true              # Set to false to disable web UI
+  port: 80                   # Port to listen on
+  bind_address: "0.0.0.0"    # 0.0.0.0 = all interfaces, 127.0.0.1 = localhost only
+  # Basic authentication (WARNING: just Basic auth over HTTP - at least use a good password)
+  auth:
+    username: "ADMIN"        # CHANGE THIS: Web interface username
+    password: "ADMIN"        # CHANGE THIS: Web interface password
+
+# Sensors to Monitor
+# CPU/PCH sensors control CPU fan zone
+# Peripheral sensors control peripheral fan zone
+# Use: ipmitool -I lanplus -H <IP> -U <USER> -P <PASS> sensor
+#      to find your server's available sensors
+sensors:
+  cpu_zone:
+    - "CPU Temp"
+    - "PCH Temp"
+  peripheral_zone:
+    - "Peripheral Temp"
+  # Safety floor applies to ALL sensors (any sensor > safety_floor sets minimum speed)
+
+# Fan Zones (SuperMicro IPMI zones - usually don't need to change)
+fan_zones:
+  cpu: "0x00"         # Main CPU cooling fans are typically located at "0"
+  peripheral: "0x01"  # Peripheral/PCIe area fans are typically located at "1"
+
+# Static Peripheral Fan Control (optional)
+# Useful when you have no PCIe cards and want peripheral fans at a fixed low speed
+# Safety floor still overrides this if any sensor gets too hot
+static_peripheral:
+  enabled: false           # Set to true to use static speed instead of temperature-based
+  speed: "0x04"           # Static speed when enabled (hex, 0x04 = 6% duty cycle)
+                          # Only used if enabled=true

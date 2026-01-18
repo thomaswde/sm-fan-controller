@@ -1,0 +1,30 @@
+#!/sbin/openrc-run
+
+name="SuperMicro Fan Controller"
+description="Dynamic fan speed control via IPMI"
+
+command="/usr/bin/python3"
+command_args="/opt/fan-controller/fan-controller.py"
+command_background="yes"
+pidfile="/run/${RC_SVCNAME}.pid"
+
+directory="/opt/fan-controller"
+output_log="/var/log/fan-controller.log"
+error_log="/var/log/fan-controller.err"
+
+depend() {
+    need net
+    after firewall
+}
+
+start_pre() {
+    if [ ! -f /opt/fan-controller/config.yaml ]; then
+        eerror "Configuration file not found: /opt/fan-controller/config.yaml"
+        return 1
+    fi
+    checkpath --directory --mode 0755 /var/log
+}
+
+stop_post() {
+    ewarn "Fan controller stopped - fans will maintain last commanded speed"
+}
