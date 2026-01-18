@@ -353,7 +353,7 @@ cd /opt/fan-controller
 python3 fan-controller.py
 ```
 
-Press Ctrl+C to stop (fans will go to 100%).
+Press Ctrl+C to stop.
 
 ## License
 
