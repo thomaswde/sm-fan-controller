@@ -1,6 +1,6 @@
 # SuperMicro Fan Controller
 
-Temperature-based fan speed controler for SuperMicro servers via IPMI. Runs as a linux system service with web-based monitoring and configuration.
+Temperature-based fan speed controler for SuperMicro servers via IPMI. Runs as a linux system service with web-based monitoring and configuration.  Intended to be run as a service on your existing util server OR as a dedicated VM with minimal resources.
 
 ## Features
 
@@ -36,7 +36,7 @@ This ensures the controller has full control without BMC interference. See the C
 
 ### Bare Alpine Linux Installation
 
-The installer handles everything automatically on a fresh Alpine VM:
+The installer handles everything automatically on a fresh Alpine VM.  Resource requirements are minimal, 1 vCPU, 512MB RAM, 2GB Disk are more than enough to support this:
 
 ```bash
 # Download and extract the files
