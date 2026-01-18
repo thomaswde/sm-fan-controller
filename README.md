@@ -383,6 +383,6 @@ For issues, feature requests, or contributions, please open an issue on GitHub.
 - Sends IPMI raw commands to directly set fan duty cycles
 - Does NOT change BMC fan mode (you set this once in BMC settings)
 - In "Full Speed" mode: Controller has full control, BMC stays hands-off
-- In other modes: Controller and BMC compete (not recommended)
+- In other modes: Controller and BMC could each make changes but seems to work fine, maybe safer in the event controller crashes out.
 
 This software controls critical thermal management. Use at your own risk. Always monitor temperatures when making changes.
